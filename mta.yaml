@@ -1,0 +1,77 @@
+ID: listadoReclamos
+_schema-version: 3.2.0
+version: 0.0.1
+parameters:
+  enable-parallel-deployments: true
+modules:
+  - name: webapp_deployer
+    type: com.sap.application.content
+    path: deployer
+    requires:
+      - name: listadoReclamos_html5_repo_host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: uimodule
+          artifacts:
+            - dist/uimodule.zip
+          target-path: resources/
+  - name: listadoReclamosdestination-content
+    type: com.sap.application.content
+    build-parameters:
+      no-source: true
+    requires:
+      - name: listadoReclamos_uaa
+        parameters:
+          service-key:
+            name: listadoReclamos_uaa-key
+      - name: listadoReclamos_html5_repo_host
+        parameters:
+          service-key:
+            name: listadoReclamos_html5_repo_host-key
+      - name: listadoReclamos_destination
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        subaccount:
+          existing_destinations_policy: update
+          destinations:
+            - Name: listadoReclamos_html5_repo_host
+              ServiceInstanceName: listadoReclamos_html5_repo_host
+              ServiceKeyName: listadoReclamos_html5_repo_host-key
+              sap.cloud.service: listadoReclamos.service
+            - Name: listadoReclamos_uaa
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: listadoReclamos_uaa
+              ServiceKeyName: listadoReclamos_uaa-key
+              sap.cloud.service: listadoReclamos.service
+  - name: uimodule
+    type: html5
+    path: uimodule
+    build-parameters:
+      builder: custom
+      commands:
+        - npm run build:uimodule --prefix ..
+      supported-platforms: []
+resources:
+  - name: listadoReclamos_destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: lite
+      service: destination
+  - name: listadoReclamos_html5_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: app-host
+      service: html5-apps-repo
+      config:
+        sizeLimit: 2
+  - name: listadoReclamos_uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service-plan: application
+      service: xsuaa
