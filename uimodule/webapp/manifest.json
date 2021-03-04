@@ -22,6 +22,15 @@
           "icon": "sap-icon://add"
         }
       }
+    },
+    "dataSources": {
+      "sapopuodatasapZCV_RECLAMOS_SRV": {
+        "uri": "sap/opu/odata/sap/ZCV_INGRESO_RECLAMO_SRV/",
+        "type": "OData",
+        "settings": {
+          "localUri": "localService/metadata.xml"
+        }
+      }
     }
   },
   "sap.ui": {
@@ -43,7 +52,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "rootView": {
-      "viewName": "profertil.listadoReclamos.view.ReclamosList",
+      "viewName": "profertil.listadoReclamos.view.App",
       "type": "XML",
       "async": true,
       "id": "idAppControl"
@@ -66,6 +75,16 @@
         "settings": {
           "bundleName": "profertil.listadoReclamos.i18n.i18n"
         }
+      },
+      "": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "Inline",
+          "preload": true
+        },
+        "dataSource": "sapopuodatasapZCV_RECLAMOS_SRV"
       }
     },
     "resources": {
@@ -80,25 +99,51 @@
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
         "viewPath": "profertil.listadoReclamos.view",
-        "controlId": "idAppControl",
+        "controlId": "app",
         "controlAggregation": "pages",
+        "bypassed": {
+          "target": [
+            "notFound"
+          ]
+        },
         "async": true
       },
       "routes": [
         {
-          "name": "RouteReclamosList",
-          "pattern": "RouteReclamosList",
+          "pattern": "",
+          "name": "worklist",
           "target": [
-            "TargetReclamosList"
+            "worklist"
+          ]
+        },
+        {
+          "pattern": "ReclamosSet/{objectId}",
+          "name": "object",
+          "target": [
+            "object"
           ]
         }
       ],
       "targets": {
-        "TargetReclamosList": {
-          "viewType": "XML",
+        "worklist": {
+          "viewName": "Worklist",
+          "viewId": "worklist",
           "viewLevel": 1,
-          "viewId": "idAppControl",
-          "viewName": "ReclamosList"
+          "title": "{i18n>worklistViewTitle}"
+        },
+        "object": {
+          "viewName": "Object",
+          "viewId": "object",
+          "viewLevel": 2,
+          "title": "{i18n>objectViewTitle}"
+        },
+        "objectNotFound": {
+          "viewName": "ObjectNotFound",
+          "viewId": "objectNotFound"
+        },
+        "notFound": {
+          "viewName": "NotFound",
+          "viewId": "notFound"
         }
       }
     }
