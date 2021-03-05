@@ -16,10 +16,10 @@
             "parameters": {},
             "additionalParameters": "allowed"
           },
-          "semanticObject": "uimodule",
+          "semanticObject": "listado",
           "action": "display",
-          "title": "Reclamos",
-          "icon": "sap-icon://add"
+          "title": "{{appTitle}}",
+          "icon": "sap-icon://activity-items"
         }
       }
     },
